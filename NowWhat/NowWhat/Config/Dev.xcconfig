@@ -1,0 +1,11 @@
+//
+//  NowWhat.xcconfig
+//  NowWhat
+//
+//  Created by Karsten Westra on 02/06/2023.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+GITHUB_USERNAME = Gifgroen
