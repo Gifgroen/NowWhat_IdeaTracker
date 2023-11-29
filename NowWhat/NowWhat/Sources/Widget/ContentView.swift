@@ -9,12 +9,15 @@ import SwiftUI
 
 func loadUserProfile() {
   let username = Bundle.main.object(forInfoDictionaryKey: "GITHUB_USERNAME") as? String ?? ""
-  let request = URLRequest(url: URL(string: "https://api.github.com/users/\(username)")!)
-  URLSession.shared.dataTask(with: request) { data, response, error in
-    guard let data else { return }
-    print("data: \(String(describing: String(data: data, encoding: .utf8)))")
+  let url = URL(string: "https://api.github.com/users/\(username)")!
+
+  Task {
+    let (data, response) = try await URLSession.shared.data(from: url)
+    print("response: \(response)")
+    if let string = String(data: data, encoding: .utf8) {
+      print("data: \(string)")
+    }
   }
-  .resume()
 }
 
 struct ContentView: View {
