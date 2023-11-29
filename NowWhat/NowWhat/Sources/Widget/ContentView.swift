@@ -7,20 +7,28 @@
 
 import SwiftUI
 
-func loadUserProfile() {
-  let username = Bundle.main.object(forInfoDictionaryKey: "GITHUB_USERNAME") as? String ?? ""
-  let url = URL(string: "https://api.github.com/users/\(username)")!
+class API: ObservableObject {
 
-  Task {
-    let (data, response) = try await URLSession.shared.data(from: url)
-    print("response: \(response)")
-    if let string = String(data: data, encoding: .utf8) {
-      print("data: \(string)")
+  @Published var json: String = ""
+
+  func loadUserProfile() {
+    let username = Bundle.main.object(forInfoDictionaryKey: "GITHUB_USERNAME") as? String ?? ""
+    let url = URL(string: "https://api.github.com/users/\(username)")!
+
+    Task {
+      let (data, _) = try await URLSession.shared.data(from: url)
+      if let string = String(data: data, encoding: .utf8) {
+        DispatchQueue.main.async { [weak self] in
+          self?.json = string
+        }
+      }
     }
   }
 }
 
 struct ContentView: View {
+
+  @StateObject var vm = API()
 
   var body: some View {
     VStack {
@@ -29,10 +37,11 @@ struct ContentView: View {
         .foregroundColor(.accentColor)
       Text("So, now what!?")
       Text(Bundle.main.object(forInfoDictionaryKey: "GITHUB_USERNAME") as? String ?? "")
+      Text(vm.json)
     }
     .padding()
     .onAppear {
-      loadUserProfile()
+      vm.loadUserProfile()
     }
   }
 }
