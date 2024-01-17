@@ -7,16 +7,58 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct SettingsScreen: View {
+  @State private var isNotificationEnabled = false
+  @State private var firstName = ""
+  @State private var lastName = ""
+  @State private var email = ""
+  @State private var githubUsername = ""
+
   var body: some View {
     VStack {
-      Image(systemName: "list.bullet.indent")
-        .imageScale(.large)
-        .foregroundColor(.accentColor)
-      Text("So, now what!?")
-      Text(Bundle.main.object(forInfoDictionaryKey: "GITHUB_USERNAME") as? String ?? "")
+      TextField("First Name", text: $firstName)
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+      TextField("Last Name", text: $lastName)
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+      TextField("Email", text: $email)
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+      TextField("GitHub Username", text: $githubUsername)
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+      Toggle("Enable Notifications", isOn: $isNotificationEnabled)
+      // Add more settings here
+      
+
+
+      Button("Save") {
+        // Save settings
+      }
+
     }
-    .padding()
+    .onAppear {
+        firstName = Bundle.main.object(forInfoDictionaryKey: "GITHUB_USERNAME") as? String ?? ""
+    }
+  }
+}
+
+struct ContentView: View {
+  var body: some View {
+    NavigationView {
+      VStack {
+        Image(systemName: "list.bullet.indent")
+          .imageScale(.large)
+          .foregroundColor(.accentColor)
+        Text("So, now what!?")
+          .padding(16)
+
+        NavigationLink(destination: SettingsScreen()) {
+          Text("Settings")
+        }
+      }
+    }
   }
 }
 
